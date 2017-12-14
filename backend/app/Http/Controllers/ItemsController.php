@@ -4,14 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Items;
 use Illuminate\Http\Request;
+use Carbon\Carbon; 
 
 class ItemsController extends Controller
 {
     public function postItem(Request $request){
     	$item = new Items();
 
+        $expl = explode(',', $request->image);
+
+        $decode = base64_decode($expl[1]);
+        if(str_contains($expl[0],'png')){
+            $exte = 'png';
+        }else{
+            $exte = 'jpg';
+        }
+
+        $currentTime = Carbon::now()->timestamp;
+        $filename = $currentTime.'.'.$exte;
+
+        $filepath = public_path().'/'.$filename;
+
+        file_put_contents($filepath, $decode);
+
     	$item->name = $request->input('name');
     	$item->quantitiy = $request->input('quantity');
+        $item->image = $filename;
     	$item->price = $request->input('price');
     	$item->save();
 

@@ -44,12 +44,27 @@
 		    	 {{ errors.first('UnitPrice') }}
 		    </div>
 		  </div>
+		  <div class="form-group">
+		    <label for="image">Picture</label>
+		    <input type="file" 
+		    	   name="image" 
+		    	   class="form-control"
+		    	   @change="getImage($event)" 		    	   
+		    	   placeholder="Image"
+		    	   v-validate="'mimes:image/jpeg,image/png'"
+		    	   >
+		   	<div v-show="errors.has('Image')" class="help-block alert alert-danger">
+		    	 {{ errors.first('Image') }}
+		    </div>
+		  </div>
 		  
 		  
 		  <button 
 		  		type="submit"
 		  		v-show="item.name && item.price && item.quantity" 
 		  		class="btn btn-default">Add to the list</button>
+
+
 		</form>
 
 	</div>
@@ -63,7 +78,8 @@
 				item:{
 					name:'',
 					quantity:0,
-					price:0
+					price:0,
+					image:''
 				}
 			}
 		},
@@ -76,6 +92,17 @@
 						console.log(response)
 						this.$router.push('/product')
 					})
+			},
+
+			getImage(e){
+				var filereader = new FileReader();
+
+				filereader.readAsDataURL(e.target.files[0]);
+				filereader.onload = (e)=>{
+					this.item.image = e.target.result;
+				}
+
+				console.log(this.item);
 			}
 		}
 
